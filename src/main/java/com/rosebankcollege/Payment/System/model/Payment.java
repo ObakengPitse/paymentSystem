@@ -1,6 +1,7 @@
 package com.rosebankcollege.Payment.System.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Pattern;
 
 import java.math.BigDecimal;
@@ -24,18 +25,22 @@ public class Payment {
     )
     private String receiverAccount;
 
+    @Digits(integer = 10, fraction = 2, message = "Amount must be a valid number with up to two decimal places")
     private BigDecimal amount;
     @Pattern(
             regexp = "^[A-Z]{3}$",
             message = "Currency must be a 3-letter uppercase ISO 4217 code (e.g., ZAR, USD)"
     )
     private String currency;
+
     private LocalDateTime createdAt;
+
+    private Long userId;
 
     public Payment() {
     }
 
-    public Payment(Long id, String senderAccount, String receiverAccount, BigDecimal amount, String currency, LocalDateTime createdAt) {
+    public Payment(Long id, String senderAccount, String receiverAccount, BigDecimal amount, String currency, LocalDateTime createdAt, Long userId) {
         this.id = id;
 
         this.senderAccount = senderAccount;
@@ -43,6 +48,7 @@ public class Payment {
         this.amount = amount;
         this.currency = currency;
         this.createdAt = createdAt;
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -91,5 +97,13 @@ public class Payment {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

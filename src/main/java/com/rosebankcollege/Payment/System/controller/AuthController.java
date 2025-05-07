@@ -5,6 +5,7 @@ import com.rosebankcollege.Payment.System.repo.UserRepository;
 import com.rosebankcollege.Payment.System.security.JwtUtil;
 import com.rosebankcollege.Payment.System.dto.AuthRequest;
 import com.rosebankcollege.Payment.System.dto.AuthResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
@@ -26,27 +28,52 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        Optional<User> existingAccNo = userRepository.findByAccountNumber(user.getAccountNumber());
-        Optional<User> existingIdNumber = userRepository.findByIdNumber(user.getIdNumber());
+        try {
+            user.setPassword(encoder.encode(user.getPassword()));
 
-        if (existingAccNo.isPresent()) {
-            return ResponseEntity.ok("User with Acc number already exists!");
-        }
+            Optional<User> existingAccNo = userRepository.findByAccountNumber(user.getAccountNumber());
+            if (existingAccNo.isPresent()) {
+                return ResponseEntity.badRequest().body("User with same Account number already exists!");
+            }
 
-        if (existingIdNumber.isPresent()) {
-            return ResponseEntity.ok("User with Id number already exists!");
+            Optional<User> existingIdNumber = userRepository.findByIdNumber(user.getIdNumber());
+            if (existingIdNumber.isPresent()) {
+                return ResponseEntity.badRequest().body("User with same ID number already exists!");
+            }
+
+            userRepository.save(user);
+            return ResponseEntity.ok("Registered Successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed due to an internal error.");
         }
-        userRepository.save(user);
-        return ResponseEntity.ok("Registered");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest req) {
         Optional<User> userOpt = userRepository.findByAccountNumber(req.accountNumber);
         if (userOpt.isPresent() && encoder.matches(req.password, userOpt.get().getPassword())) {
+            User user = userOpt.get();
             String token = jwtUtil.generateToken(req.accountNumber);
-            return ResponseEntity.ok(new AuthResponse(token));
+
+            AuthResponse authResponse = new AuthResponse();
+            authResponse.setToken(token);
+            authResponse.setFullName(user.getFullName());
+
+            String accountNumber = user.getAccountNumber();
+            int lengthToMask = accountNumber.length() - 4;
+            String maskedPart = "*".repeat(lengthToMask);
+            String last4Digits = accountNumber.substring(accountNumber.length() - 4);
+            accountNumber = maskedPart + last4Digits;
+            authResponse.setAccountNumber(accountNumber);
+
+            String idNumber = user.getIdNumber();
+            lengthToMask = idNumber.length() - 4;
+            maskedPart = "*".repeat(lengthToMask);
+            last4Digits = idNumber.substring(idNumber.length() - 4);
+            idNumber = maskedPart + last4Digits;
+            authResponse.setIdNumber(idNumber);
+
+            return ResponseEntity.ok(authResponse);
         }
         return ResponseEntity.status(401).body("Invalid credentials");
     }

@@ -10,10 +10,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Pattern(regexp = "^[a-zA-Z ]+$")
+    @Pattern(regexp = "^[a-zA-Z ]+$",  message = "Name must contain only letters")
     private String fullName;
 
-    @Pattern(regexp = "^[0-9]{13}$")
+    @Pattern(regexp = "^[0-9]{13}$", message = "Id Number must be 13 digits long")
     private String idNumber;
 
     @Pattern(
