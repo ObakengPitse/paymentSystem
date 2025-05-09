@@ -2,8 +2,6 @@ package com.rosebankcollege.Payment.System.controller;
 
 import com.rosebankcollege.Payment.System.model.Payment;
 import com.rosebankcollege.Payment.System.service.PaymentService;
-import org.apache.el.stream.Optional;
-import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/payments")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://regal-fenglisu-b4e3d4.netlify.app/")
 public class PaymentController {
     private final PaymentService paymentService;
 

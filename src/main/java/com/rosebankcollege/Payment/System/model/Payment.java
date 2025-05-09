@@ -13,7 +13,6 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Pattern(
             regexp = "^\\d{10,20}$",
             message = "Account number must be 10 to 20 digits long"
@@ -32,7 +31,6 @@ public class Payment {
             message = "Currency must be a 3-letter uppercase ISO 4217 code (e.g., ZAR, USD)"
     )
     private String currency;
-
     private String provider;
     @Pattern(
             regexp = "^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$",

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://regal-fenglisu-b4e3d4.netlify.app/")
 public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
