@@ -32,8 +32,4 @@ public class PaymentService {
     public Optional<Payment> getPayment(Long id) {
         return paymentRepository.findById(id);
     }
-
-    public List<Payment> getByUserId(Long userId) {
-        return paymentRepository.findAllByUserId(userId);
-    }
 }

@@ -33,14 +33,19 @@ public class Payment {
     )
     private String currency;
 
-    private LocalDateTime createdAt;
+    private String provider;
+    @Pattern(
+            regexp = "^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$",
+            message = "Enter Valid SWIFT code e.g. FIRNZAJJ"
+    )
+    private String swiftCode;
 
-    private Long userId;
+    private LocalDateTime createdAt;
 
     public Payment() {
     }
 
-    public Payment(Long id, String senderAccount, String receiverAccount, BigDecimal amount, String currency, LocalDateTime createdAt, Long userId) {
+    public Payment(Long id, String senderAccount, String receiverAccount, BigDecimal amount, String currency, LocalDateTime createdAt, String provider, String swiftCode) {
         this.id = id;
 
         this.senderAccount = senderAccount;
@@ -48,7 +53,8 @@ public class Payment {
         this.amount = amount;
         this.currency = currency;
         this.createdAt = createdAt;
-        this.userId = userId;
+        this.provider = provider;
+        this.swiftCode = swiftCode;
     }
 
     public Long getId() {
@@ -99,11 +105,19 @@ public class Payment {
         this.createdAt = createdAt;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getProvider() {
+        return provider;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public String getSwiftCode() {
+        return swiftCode;
+    }
+
+    public void setSwiftCode(String swiftCode) {
+        this.swiftCode = swiftCode;
     }
 }

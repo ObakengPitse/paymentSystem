@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/payments")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PaymentController {
     private final PaymentService paymentService;
 
@@ -20,9 +21,9 @@ public class PaymentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Payment> createPayment(@RequestBody Payment payment) {
+    public ResponseEntity<?> createPayment(@RequestBody Payment payment) {
         Payment savedPayment = paymentService.createPayment(payment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPayment);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Payment successful, refNo: " + savedPayment.getId());
     }
 
     @PostMapping("/getAll")
@@ -35,15 +36,6 @@ public class PaymentController {
         return paymentService.getPayment(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/getByUserId/{id}")
-    public ResponseEntity<List<Payment>> getPaymentsByUserId(@PathVariable Long userId) {
-        List<Payment> payments = paymentService.getByUserId(userId);
-        if(payments != null) {
-            return ResponseEntity.ok(payments);
-        }
-        return null;
     }
 
 }
