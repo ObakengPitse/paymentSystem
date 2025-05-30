@@ -1,6 +1,8 @@
 package com.rosebankcollege.Payment.System.controller;
 
+import com.rosebankcollege.Payment.System.model.Employee;
 import com.rosebankcollege.Payment.System.model.User;
+import com.rosebankcollege.Payment.System.repo.EmployeeRepository;
 import com.rosebankcollege.Payment.System.repo.UserRepository;
 import com.rosebankcollege.Payment.System.security.JwtUtil;
 import com.rosebankcollege.Payment.System.dto.AuthRequest;
@@ -17,13 +19,15 @@ import java.util.Optional;
 @CrossOrigin(origins = "https://regal-fenglisu-b4e3d4.netlify.app/")
 public class AuthController {
     private final UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
     private final PasswordEncoder encoder;
     private final JwtUtil jwtUtil;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder encoder, JwtUtil jwtUtil) {
+    public AuthController(UserRepository userRepository, PasswordEncoder encoder, JwtUtil jwtUtil, EmployeeRepository employeeRepository) {
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.jwtUtil = jwtUtil;
+        this.employeeRepository = employeeRepository;
     }
 
     @PostMapping("/register")
@@ -48,7 +52,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/customer/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest req) {
         Optional<User> userOpt = userRepository.findByAccountNumber(req.accountNumber);
         if (userOpt.isPresent() && encoder.matches(req.password, userOpt.get().getPassword())) {
@@ -77,4 +81,14 @@ public class AuthController {
         }
         return ResponseEntity.status(401).body("Invalid credentials");
     }
+
+    @PostMapping("/employee/login")
+    public ResponseEntity<?> employeeLogin(@RequestBody Employee req) {
+        Optional<Employee> employeeOpt = employeeRepository.findByEmailAddress(req.getEmailAddress());
+        if (employeeOpt.isPresent() && encoder.matches(req.getPassword(), employeeOpt.get().getPassword())) {
+            Employee employee = employeeOpt.get();
+        }
+        return null;
+    }
 }
+
