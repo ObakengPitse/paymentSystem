@@ -1,23 +1,23 @@
-# Use Eclipse Temurin JDK 21 base image
 FROM eclipse-temurin:21-jdk
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy Maven wrapper files and pom.xml first (for Docker cache)
+# Copy Maven wrapper and pom.xml first
 COPY .mvn/ .mvn/
 COPY mvnw pom.xml ./
 
-# Download dependencies (uses cache if pom.xml hasn't changed)
+# Make mvnw executable
+RUN chmod +x mvnw
+
+# Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Copy the rest of the project source
+# Copy the rest of the source
 COPY src ./src
 
-# Build the application (skip tests if desired)
+# Build the application
 RUN ./mvnw clean package -DskipTests
 
-# Expose the port your app runs on (usually 8080 for Spring Boot)
 EXPOSE 8080
 
 # Run the generated jar (replace with your actual JAR name if needed)
