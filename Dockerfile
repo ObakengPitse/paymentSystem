@@ -2,23 +2,24 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first
+# Copy Maven wrapper and build config
 COPY .mvn/ .mvn/
 COPY mvnw pom.xml ./
-
-# Make mvnw executable
 RUN chmod +x mvnw
 
 # Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Copy the rest of the source
+# Copy source code
 COPY src ./src
 
-# Build the application
+# Build the app
 RUN ./mvnw clean package -DskipTests
+
+# Copy and set the entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8080
 
-# Run the generated jar (replace with your actual JAR name if needed)
-CMD ["java", "-jar", "target/Payment-System-0.0.1-SNAPSHOT.jar app.jar"]
+ENTRYPOINT ["/app/entrypoint.sh"]
