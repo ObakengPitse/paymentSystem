@@ -9,6 +9,9 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Pattern(regexp = "^[a-zA-Z ]+$",  message = "Name must contain only letters")
+    private String fullName;
     @Pattern(
             regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$",
             message = "Invalid email address format"
@@ -54,5 +57,13 @@ public class Employee {
             message = "Password must be at least 8 characters long and include uppercase, lowercase, digit, and special character"
     ) String password) {
         this.password = password;
+    }
+
+    public @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must contain only letters") String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(@Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must contain only letters") String fullName) {
+        this.fullName = fullName;
     }
 }

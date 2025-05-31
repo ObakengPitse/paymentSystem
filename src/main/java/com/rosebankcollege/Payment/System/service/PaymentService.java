@@ -18,18 +18,44 @@ public class PaymentService {
 
     public Payment createPayment(Payment payment) {
         payment.setCreatedAt(LocalDateTime.now());
+        payment.setStatus("Pending");
         return paymentRepository.save(payment);
     }
 
     public List<Payment> getAllPayments() {
-        return paymentRepository.findAll();
+        List<Payment> payments = paymentRepository.findAll();
+        for(Payment payment: payments) {
+            payment.setSenderAccount(maskAccountNo(payment.getSenderAccount()));
+            payment.setReceiverAccount(maskAccountNo(payment.getReceiverAccount()));
+        }
+        return payments;
     }
 
-    public List<Payment> getPaymentsByAccNo(String senderAccount) {
-        return paymentRepository.findBySenderAccount(senderAccount);
+    public List<Payment> getPaymentsByUserId(Long userId) {
+        List<Payment> payments = paymentRepository.findAllByUserId(userId);
+        for(Payment payment: payments) {
+            payment.setSenderAccount(maskAccountNo(payment.getSenderAccount()));
+            payment.setReceiverAccount(maskAccountNo(payment.getReceiverAccount()));
+        }
+        return payments;
     }
 
-    public Optional<Payment> getPayment(Long id) {
-        return paymentRepository.findById(id);
+    public Payment getPayment(Long id) {
+        Optional<Payment> payment = paymentRepository.findById(id);
+        if(payment.isPresent()) {
+            Payment foundPayment = payment.get();
+            foundPayment.setSenderAccount(maskAccountNo(foundPayment.getSenderAccount()));
+            foundPayment.setReceiverAccount(maskAccountNo(foundPayment.getReceiverAccount()));
+            return foundPayment;
+        }
+        return null;
+    }
+
+    public String maskAccountNo(String accNumber) {
+        int lengthToMask = accNumber.length() - 4;
+        String maskedPart = "*".repeat(lengthToMask);
+        String last4Digits = accNumber.substring(accNumber.length() - 4);
+        accNumber = maskedPart + last4Digits;
+        return accNumber;
     }
 }

@@ -13,6 +13,8 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long userId;
     @Pattern(
             regexp = "^\\d{10,20}$",
             message = "Account number must be 10 to 20 digits long"
@@ -37,15 +39,15 @@ public class Payment {
             message = "Enter Valid SWIFT code e.g. FIRNZAJJ"
     )
     private String swiftCode;
-
+    private String status;
     private LocalDateTime createdAt;
 
     public Payment() {
     }
 
-    public Payment(Long id, String senderAccount, String receiverAccount, BigDecimal amount, String currency, LocalDateTime createdAt, String provider, String swiftCode) {
+    public Payment(Long id, Long userId, String senderAccount, String receiverAccount, BigDecimal amount, String currency, LocalDateTime createdAt, String provider, String swiftCode, String status) {
         this.id = id;
-
+        this.userId = userId;
         this.senderAccount = senderAccount;
         this.receiverAccount = receiverAccount;
         this.amount = amount;
@@ -53,6 +55,7 @@ public class Payment {
         this.createdAt = createdAt;
         this.provider = provider;
         this.swiftCode = swiftCode;
+        this.status = status;
     }
 
     public Long getId() {
@@ -117,5 +120,21 @@ public class Payment {
 
     public void setSwiftCode(String swiftCode) {
         this.swiftCode = swiftCode;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

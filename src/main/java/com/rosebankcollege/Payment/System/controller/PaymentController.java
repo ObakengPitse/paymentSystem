@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/payments")
-@CrossOrigin(origins = "https://regal-fenglisu-b4e3d4.netlify.app/")
+@CrossOrigin(origins = {"http://localhost:3000/" , "https://regal-fenglisu-b4e3d4.netlify.app/"})
 public class PaymentController {
     private final PaymentService paymentService;
 
@@ -31,9 +31,12 @@ public class PaymentController {
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
-        return paymentService.getPayment(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(paymentService.getPayment(id));
+    }
+
+    @GetMapping("/getByUserId/{userId}")
+    public ResponseEntity<List<Payment>> getPaymentByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(paymentService.getPaymentsByUserId(userId));
     }
 
 }
