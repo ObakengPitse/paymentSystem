@@ -40,6 +40,17 @@ public class PaymentService {
         return payments;
     }
 
+    public Payment processPayment(Long paymentId) {
+        Optional<Payment> optPayment = paymentRepository.findById(paymentId);
+        if(optPayment.isPresent()) {
+
+            optPayment.get().setStatus("Processed");
+
+            return paymentRepository.save(optPayment.get());
+        }
+        return null;
+    }
+
     public Payment getPayment(Long id) {
         Optional<Payment> payment = paymentRepository.findById(id);
         if(payment.isPresent()) {
